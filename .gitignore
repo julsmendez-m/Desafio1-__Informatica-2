@@ -1,0 +1,9 @@
+build/
+build-*/
+*.user
+CMakeCache.txt
+CMakeFiles/
+*.o
+*.obj
+*.exe
+.qtc_clangd/
