@@ -6,7 +6,6 @@
    fisica dentro de la secuencia continua de bits, y lee/escribe
    esos 3 bits.*/
 
-//Codificacion de las fichas
 const int BITS_POR_FICHA = 3;
 const unsigned char MASCARA_FICHA = 0x07;   // 0000 0111
 
@@ -24,28 +23,25 @@ const unsigned char TIPOS_DE_FICHA = 6;
 // Cantidad minima de bytes para almacenar totalPosiciones fichas
 int calcularBytes(int totalPosiciones);
 
-// Bits sobrante. Quedan agrupados a la izquierda del byte
-int calcularRelleno(int totalPosiciones);
+// Bits sobrantes del bloque reservado. Quedan agrupados a la izquierda de toda la trama.
+int calcularRelleno(int totalPosiciones, int bytesReservados);
 
 // Indice global del primer bit de una ficha, contando desde el bit mas significativo del byte 0.
-int calcularBits(int posicion, int totalPosiciones);
+int calcularBits(int posicion, int totalPosiciones, int bytesReservados);
 
-// Conversiones entre (fila, columna) y posicion lineal.
-int filaColumnaPosicion(int fila, int columna, int columnas);
-int posicionFila(int posicion, int columnas);
-int posicionColumna(int posicion, int columnas);
-
-
-// ---------- Bajo nivel: uso interno del modulo ----------
-
+// Lee los 3 bits que empiezan en bitInicial (uso interno del modulo).
 unsigned char extraerFicha(const unsigned char* tablero, int bitInicial);
+
+// Escribe los 3 bits de valor a partir de bitInicial sin tocar las fichas vecinas (uso interno del modulo).
 void guardarFicha(unsigned char* tablero, int bitInicial, unsigned char valor);
 
+// Devuelve la ficha de una posicion logica. Si la posicion no existe devuelve F_ESPECIAL.
+unsigned char obtenerFicha(const unsigned char* tablero, int posicion,int totalPosiciones, int bytesReservados);
 
-// ---------- Alto nivel: lo que usan los demas modulos ----------
+// Cambia la ficha de una posicion logica. Si la posicion no existe no hace nada.
+void modificarFicha(unsigned char* tablero, int posicion, unsigned char valor,int totalPosiciones, int bytesReservados);
 
-unsigned char obtenerFicha(const unsigned char* tablero,int posicion,int totalPosiciones);
-
-void modificarFicha(unsigned char* tablero,int posicion,unsigned char valor,int totalPosiciones);
+// Pone en 0 los bits de relleno de la izquierda.
+void limpiarRelleno(unsigned char* tablero, int totalPosiciones, int bytesReservados);
 
 #endif
