@@ -3,7 +3,7 @@
 #include "posicion.h"
 #include "marcador.h"
 
-int BuscarHorizontal(const unsigned char* tablero,int filas,int columnas,unsigned char* marcador)
+int BuscarHorizontal(const unsigned char* tablero, int filas, int columnas,int bytesReservados, unsigned char* marcador)
 {
     int totalPosiciones = filas * columnas;
     int combinaciones = 0;
@@ -21,10 +21,10 @@ int BuscarHorizontal(const unsigned char* tablero,int filas,int columnas,unsigne
                 filaColumnaPosicion(fila, columna - 1, columnas);
 
             unsigned char fichaActual =
-                obtenerFicha(tablero, posicionActual, totalPosiciones);
+                obtenerFicha(tablero, posicionActual, totalPosiciones, bytesReservados);
 
             unsigned char fichaAnterior =
-                obtenerFicha(tablero, posicionAnterior, totalPosiciones);
+                obtenerFicha(tablero, posicionAnterior, totalPosiciones, bytesReservados);
 
             if (fichaActual < TIPOS_DE_FICHA &&
                 fichaActual == fichaAnterior)
@@ -33,14 +33,12 @@ int BuscarHorizontal(const unsigned char* tablero,int filas,int columnas,unsigne
             }
             else
             {
-                // La racha se rompio en 'columna'. Si era valida,
-                // ocupaba las casillas columna-1, columna-2, ...
+                // La racha se rompio en 'columna'. Si era valida,ocupaba las casillas columna-1, columna-2, ...
                 if (contador >= 3)
                 {
                     for (int k = 0; k < contador; k++)
                     {
-                        marcarFicha(marcador,
-                                    filaColumnaPosicion(fila, columna - 1 - k, columnas));
+                        marcarFicha(marcador,filaColumnaPosicion(fila, columna - 1 - k, columnas));
                     }
 
                     combinaciones++;
@@ -50,14 +48,12 @@ int BuscarHorizontal(const unsigned char* tablero,int filas,int columnas,unsigne
             }
         }
 
-        // La ultima racha de la fila no la cierra ningun cambio,
-        // hay que revisarla al salir del ciclo.
+        // La ultima racha de la fila no la cierra ningun cambio,se revisa al salir del ciclo.
         if (contador >= 3)
         {
             for (int k = 0; k < contador; k++)
             {
-                marcarFicha(marcador,
-                            filaColumnaPosicion(fila, columnas - 1 - k, columnas));
+                marcarFicha(marcador,filaColumnaPosicion(fila, columnas - 1 - k, columnas));
             }
 
             combinaciones++;
@@ -67,7 +63,7 @@ int BuscarHorizontal(const unsigned char* tablero,int filas,int columnas,unsigne
     return combinaciones;
 }
 
-int BuscarVertical(const unsigned char* tablero,int filas,int columnas,unsigned char* marcador)
+int BuscarVertical(const unsigned char* tablero, int filas, int columnas,int bytesReservados, unsigned char* marcador)
 {
     int totalPosiciones = filas * columnas;
     int combinaciones = 0;
@@ -85,10 +81,10 @@ int BuscarVertical(const unsigned char* tablero,int filas,int columnas,unsigned 
                 filaColumnaPosicion(fila - 1, columna, columnas);
 
             unsigned char fichaActual =
-                obtenerFicha(tablero, posicionActual, totalPosiciones);
+                obtenerFicha(tablero, posicionActual, totalPosiciones, bytesReservados);
 
             unsigned char fichaAnterior =
-                obtenerFicha(tablero, posicionAnterior, totalPosiciones);
+                obtenerFicha(tablero, posicionAnterior, totalPosiciones, bytesReservados);
 
             if (fichaActual < TIPOS_DE_FICHA &&
                 fichaActual == fichaAnterior)
@@ -101,8 +97,7 @@ int BuscarVertical(const unsigned char* tablero,int filas,int columnas,unsigned 
                 {
                     for (int k = 0; k < contador; k++)
                     {
-                        marcarFicha(marcador,
-                                    filaColumnaPosicion(fila - 1 - k, columna, columnas));
+                        marcarFicha(marcador,filaColumnaPosicion(fila - 1 - k, columna, columnas));
                     }
 
                     combinaciones++;
@@ -116,8 +111,7 @@ int BuscarVertical(const unsigned char* tablero,int filas,int columnas,unsigned 
         {
             for (int k = 0; k < contador; k++)
             {
-                marcarFicha(marcador,
-                            filaColumnaPosicion(filas - 1 - k, columna, columnas));
+                marcarFicha(marcador,filaColumnaPosicion(filas - 1 - k, columna, columnas));
             }
 
             combinaciones++;
@@ -127,7 +121,7 @@ int BuscarVertical(const unsigned char* tablero,int filas,int columnas,unsigned 
     return combinaciones;
 }
 
-int BuscarCombinaciones(const unsigned char* tablero,int filas,int columnas,unsigned char* marcador)
+int BuscarCombinaciones(const unsigned char* tablero, int filas, int columnas,int bytesReservados, unsigned char* marcador)
 {
     int totalPosiciones = filas * columnas;
 
@@ -135,8 +129,8 @@ int BuscarCombinaciones(const unsigned char* tablero,int filas,int columnas,unsi
 
     int combinaciones = 0;
 
-    combinaciones += BuscarHorizontal(tablero, filas, columnas, marcador);
-    combinaciones += BuscarVertical(tablero, filas, columnas, marcador);
+    combinaciones += BuscarHorizontal(tablero, filas, columnas, bytesReservados, marcador);
+    combinaciones += BuscarVertical(tablero, filas, columnas, bytesReservados, marcador);
 
     return combinaciones;
 }

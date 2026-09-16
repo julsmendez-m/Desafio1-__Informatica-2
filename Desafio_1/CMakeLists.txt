@@ -19,6 +19,10 @@ add_executable(Desafio_1
   posicion.h posicion.cpp
   combinaciones.h combinaciones.cpp
   marcador.h marcador.cpp
+  eliminacion.h eliminacion.cpp
+  gravedad.h gravedad.cpp
+  estadisticas.h estadisticas.cpp
+  generacion.h generacion.cpp
 )
 target_link_libraries(Desafio_1 PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
