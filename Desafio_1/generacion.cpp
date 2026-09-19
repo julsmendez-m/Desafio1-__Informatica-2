@@ -17,7 +17,6 @@ unsigned char GenerarFichaAleatoria()
     return (unsigned char)(numero % TIPOS_DE_FICHA);
 }
 
-// escribe si la casilla esta vacia (110),devuelve true si inserto una ficha nueva.
 bool InsertarNuevasFichas(unsigned char* tablero, int posicion, int totalPosiciones, int bytesReservados)
 {
     if (obtenerFicha(tablero, posicion, totalPosiciones, bytesReservados) != F_VACIO)
@@ -43,7 +42,6 @@ int RellenarEspaciosVacios(unsigned char* tablero, int filas, int columnas, int 
     return rellenadas;
 }
 
-// despues de AplicarGravedad.se deja todos los vacios juntos arriba, cada columna se recorre desde la fila 0 y se detiene en la primera ficha que encuentra
 int GenerarNuevasFichas(unsigned char* tablero, int filas, int columnas, int bytesReservados)
 {
     int totalPosiciones = filas * columnas;

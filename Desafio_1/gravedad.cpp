@@ -2,7 +2,6 @@
 #include "bits.h"
 #include "posicion.h"
 
-// Mueve la ficha de 'origen' a 'destino' y deja 'origen' vacio.
 void DesplazarFicha(unsigned char* tablero, int origen, int destino,int totalPosiciones, int bytesReservados)
 {
     if (origen == destino)
@@ -14,7 +13,6 @@ void DesplazarFicha(unsigned char* tablero, int origen, int destino,int totalPos
     modificarFicha(tablero, origen, F_VACIO, totalPosiciones, bytesReservados);
 }
 
-// Convierte (fila, columna) a posiciones lineales y desplaza la ficha.
 void BajarFicha(unsigned char* tablero, int filaOrigen, int filaDestino,int columna, int filas, int columnas, int bytesReservados)
 {
     if (filaDestino <= filaOrigen || filaDestino >= filas || filaOrigen < 0)
@@ -27,7 +25,6 @@ void BajarFicha(unsigned char* tablero, int filaOrigen, int filaDestino,int colu
     DesplazarFicha(tablero, origen, destino, totalPosiciones, bytesReservados);
 }
 
-// Hace caer todas las fichas de una columna. Devuelve cuantos vacios quedaron arriba.
 int CompactarColumna(unsigned char* tablero, int columna, int filas, int columnas, int bytesReservados)
 {
     int totalPosiciones = filas * columnas;
@@ -48,7 +45,6 @@ int CompactarColumna(unsigned char* tablero, int columna, int filas, int columna
     return filaDestino + 1;
 }
 
-// Aplica la gravedad a todo el tablero. Devuelve el total de vacios que quedaron arriba.
 int AplicarGravedad(unsigned char* tablero, int filas, int columnas, int bytesReservados)
 {
     int vacios = 0;

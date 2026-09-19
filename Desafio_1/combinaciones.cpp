@@ -33,7 +33,7 @@ int BuscarHorizontal(const unsigned char* tablero, int filas, int columnas,int b
             }
             else
             {
-                // La racha se rompio en 'columna'. Si era valida,ocupaba las casillas columna-1, columna-2, ...
+
                 if (contador >= 3)
                 {
                     for (int k = 0; k < contador; k++)
@@ -48,7 +48,7 @@ int BuscarHorizontal(const unsigned char* tablero, int filas, int columnas,int b
             }
         }
 
-        // La ultima racha de la fila no la cierra ningun cambio,se revisa al salir del ciclo.
+
         if (contador >= 3)
         {
             for (int k = 0; k < contador; k++)

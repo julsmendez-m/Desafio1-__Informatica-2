@@ -6,8 +6,6 @@ int calcularBytes(int totalPosiciones)
     return (totalBits + 7) >> 3;
 }
 
-// El relleno se calcula con los bytes que realmente estan reservados: si la memoria no se redujo(regla del 65 %), los bits sobrantes
-// siguen quedando a la izquierda y las fichas pegadas al bit menos significativo.
 int calcularRelleno(int totalPosiciones, int bytesReservados)
 {
     int totalBits = totalPosiciones * BITS_POR_FICHA;
@@ -31,8 +29,8 @@ unsigned char extraerFicha(const unsigned char* tablero, int bitInicial)
         return (tablero[indiceByte] >> corrimiento) & MASCARA_FICHA;
     }
 
-    int bitsEnPrimero = 8 - desplazado;      // 2 o 1
-    int bitsEnSegundo = 3 - bitsEnPrimero;   // 1 o 2
+    int bitsEnPrimero = 8 - desplazado;
+    int bitsEnSegundo = 3 - bitsEnPrimero;
 
     unsigned char parteAlta = tablero[indiceByte] & (unsigned char)((1 << bitsEnPrimero) - 1);
     unsigned char parteBaja = tablero[indiceByte + 1] >> (8 - bitsEnSegundo);
@@ -60,12 +58,11 @@ void guardarFicha(unsigned char* tablero, int bitInicial, unsigned char valor)
     int bitsEnPrimero = 8 - desplazado;
     int bitsEnSegundo = 3 - bitsEnPrimero;
 
-    // Primer byte recibe los bits MAS significativos de la ficha
+
     unsigned char mascara1 = (unsigned char)((1 << bitsEnPrimero) - 1);
     tablero[indiceByte] &= (unsigned char)(~mascara1);
     tablero[indiceByte] |= (unsigned char)((valor >> bitsEnSegundo) & mascara1);
 
-    // Segundo byte recibe los bits MENOS significativos
     unsigned char mascara2 = (unsigned char)(((1 << bitsEnSegundo) - 1) << (8 - bitsEnSegundo));
     tablero[indiceByte + 1] &= (unsigned char)(~mascara2);
     tablero[indiceByte + 1] |= (unsigned char)((valor << (8 - bitsEnSegundo)) & mascara2);
@@ -89,8 +86,6 @@ void modificarFicha(unsigned char* tablero, int posicion, unsigned char valor,in
     guardarFicha(tablero, calcularBits(posicion, totalPosiciones, bytesReservados), valor);
 }
 
-// Los bytes que quedan completos dentro del relleno se ponen en 0. En el byte donde termina el relleno solo se apagan los bits de la izquierda
-// la mascara deja en 1 los bits que pertenecen a fichas y el AND borra el resto.
 void limpiarRelleno(unsigned char* tablero, int totalPosiciones, int bytesReservados)
 {
     int relleno = calcularRelleno(totalPosiciones, bytesReservados);

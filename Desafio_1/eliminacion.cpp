@@ -6,8 +6,6 @@ bool EliminarFicha(unsigned char* tablero, int posicion, int totalPosiciones, in
 {
     unsigned char ficha = obtenerFicha(tablero, posicion, totalPosiciones, bytesReservados);
 
-    // obtenerFicha devuelve F_ESPECIAL si la posicion esta fuera de rango,
-    // asi que este if cubre ambos casos: posicion invalida o casilla sin ficha.
     if (ficha >= TIPOS_DE_FICHA)
         return false;
 
@@ -20,7 +18,6 @@ void VaciarPosicion(unsigned char* tablero, int posicion, int totalPosiciones, i
     modificarFicha(tablero, posicion, F_VACIO, totalPosiciones, bytesReservados);
 }
 
-// se reutiliza la funcion del modulo marcador.
 int ContarFichasEliminadas(const unsigned char* marcador, int totalPosiciones)
 {
     return contarFichasMarcadas(marcador, totalPosiciones);
@@ -43,7 +40,6 @@ int EliminarFichasMarcadas(unsigned char* tablero, int filas, int columnas,int b
     return eliminadas;
 }
 
-// Elimina las combinaciones que BuscarCombinaciones dejo marcadas.
 int EliminarCombinaciones(unsigned char* tablero, int filas, int columnas,int bytesReservados, const unsigned char* marcador)
 {
     return EliminarFichasMarcadas(tablero, filas, columnas, bytesReservados, marcador);

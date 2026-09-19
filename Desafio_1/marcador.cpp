@@ -15,6 +15,14 @@ void inicializarMarcador(unsigned char* marcador, int totalPosiciones)
     }
 }
 
+void reiniciarMarcador(unsigned char*& marcador, int totalPosiciones)
+{
+    delete[] marcador;
+    marcador = new unsigned char[calcularBytesMarcador(totalPosiciones)];
+
+    inicializarMarcador(marcador, totalPosiciones);
+}
+
 void marcarFicha(unsigned char* marcador, int posicion)
 {
     if (posicion < 0)
@@ -26,7 +34,6 @@ void marcarFicha(unsigned char* marcador, int posicion)
     marcador[indiceByte] |= mascara;
 }
 
-//mascara deja en 1 todos los bits menos el que interesa, y el AND apaga solo ese.
 void desmarcarFicha(unsigned char* marcador, int posicion)
 {
     if (posicion < 0)
@@ -38,7 +45,6 @@ void desmarcarFicha(unsigned char* marcador, int posicion)
     marcador[indiceByte] &= (unsigned char)(~mascara);
 }
 
-//El AND aisla el bit. Si el resultado no es cero, estaba en 1.
 bool estaMarcada(const unsigned char* marcador, int posicion)
 {
     if (posicion < 0)

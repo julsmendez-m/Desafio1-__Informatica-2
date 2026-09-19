@@ -1,7 +1,6 @@
 #include "estadisticas.h"
 #include <iostream>
 
-// Pone todos los contadores en cero.
 void inicializarEstadisticas(int* estadisticas)
 {
     for (int i = 0; i < TOTAL_ESTADISTICAS; i++)
@@ -32,8 +31,6 @@ void registrarCascada(int* estadisticas)
     estadisticas[EST_CASCADAS_JUGADA]++;
 }
 
-// Criterio de puntuacion: 10 puntos por cada ficha eliminada en una combinacion y
-//50 puntos extra por cada ronda que sea cascada.
 void actualizarPuntuacion(int* estadisticas, int fichasEliminadas, bool esCascada)
 {
     estadisticas[EST_PUNTUACION] += fichasEliminadas * PUNTOS_POR_FICHA;

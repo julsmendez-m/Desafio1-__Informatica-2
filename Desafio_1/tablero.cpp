@@ -1,11 +1,25 @@
 #include "tablero.h"
 #include "bits.h"
+#include "posicion.h"
+#include <iostream>
 
-// Porcentaje minimo de ocupacion antes de reducir la memoria.
 const int PORCENTAJE_MINIMO = 65;
 
+char simboloFicha(unsigned char ficha)
+{
+    switch (ficha)
+    {
+    case F_CUADRADO:   return 'C';
+    case F_HEXAGONO:   return 'H';
+    case F_RECTANGULO: return 'R';
+    case F_TRIANGULO:  return 'T';
+    case F_ROMBO:      return 'O';
+    case F_PENTAGONO:  return 'P';
+    case F_VACIO:      return '.';
+    default:           return '*';   // F_ESPECIAL
+    }
+}
 
-// Reserva exactamente los bytes necesarios y los deja vacios.
 void crearTablero(unsigned char*& tablero, int filas, int columnas, int& bytesReservados)
 {
     bytesReservados = calcularBytes(filas * columnas);
@@ -15,7 +29,6 @@ void crearTablero(unsigned char*& tablero, int filas, int columnas, int& bytesRe
     LimpiarTablero(tablero, filas, columnas, bytesReservados);
 }
 
-// Pone todos los bytes en 0 y luego escribe el codigo de vacio en cada posicion.
 void LimpiarTablero(unsigned char* tablero, int filas, int columnas, int bytesReservados)
 {
     int totalPosiciones = filas * columnas;
@@ -31,7 +44,6 @@ void LimpiarTablero(unsigned char* tablero, int filas, int columnas, int bytesRe
     }
 }
 
-// Libera el bloque y deja el puntero y el tamano en 0.
 void liberarTablero(unsigned char*& tablero, int& bytesReservados)
 {
     delete[] tablero;
@@ -39,7 +51,6 @@ void liberarTablero(unsigned char*& tablero, int& bytesReservados)
     bytesReservados = 0;
 }
 
-// Se compara que ocupacion < 65 %.
 bool debeReducirMemoria(int totalPosiciones, int bytesReservados)
 {
     int bitsUsados = totalPosiciones * BITS_POR_FICHA;
@@ -48,8 +59,6 @@ bool debeReducirMemoria(int totalPosiciones, int bytesReservados)
     return bitsUsados * 100 < bitsReservados * PORCENTAJE_MINIMO;
 }
 
-// Dada una fila (o columna) del tablero nuevo, devuelve cual era en el tablero viejo
-// Devuelve -1 si es la fila/columna recien insertada.
 int indiceOrigen(int indiceNuevo, int indiceCambio, int cambio)
 {
     if (cambio == 0 || indiceNuevo < indiceCambio)
@@ -66,8 +75,7 @@ int indiceOrigen(int indiceNuevo, int indiceCambio, int cambio)
     return indiceNuevo + 1;
 }
 
-// las fichas estan pegadas al bit menos significativo, entonces el bloque minimo
-// son los ultimos 'bytesNuevos' bytes del bloque actual
+
 void reducirMemoria(unsigned char*& tablero, int& bytesReservados, int bytesNuevos)
 {
     unsigned char* nuevo = new unsigned char[bytesNuevos];
@@ -83,13 +91,6 @@ void reducirMemoria(unsigned char*& tablero, int& bytesReservados, int bytesNuev
     bytesReservados = bytesNuevos;
 }
 
-// Nucleo de las 4 operaciones. Recorre las posiciones del tablero, busca
-// de que posicion vieja viene cada una y copia sus 3 bits.
-//
-// Si el tablero crece y ya no cabe, se reserva un bloque nuevo del tamano justo.
-// Si cabe, se trabaja sobre el mismo bloque:
-//  - Al insertar, cada ficha se mueve hacia la izquierda o se queda
-//  - Al eliminar, cada ficha se mueve hacia la derecha o se queda
 bool ReorganizarTablero(unsigned char*& tablero, int& filas, int& columnas, int& bytesReservados,int indiceFila, int cambioFila, int indiceColumna, int cambioColumna)
 {
     int filasNuevas = filas + cambioFila;
@@ -145,7 +146,6 @@ bool ReorganizarTablero(unsigned char*& tablero, int& filas, int& columnas, int&
     filas = filasNuevas;
     columnas = columnasNuevas;
 
-    // Al eliminar quedan restos de fichas viejas a la izquierda y se borran.
     limpiarRelleno(tablero, totalNuevo, bytesReservados);
 
     if (!crece && debeReducirMemoria(totalNuevo, bytesReservados))
@@ -156,7 +156,6 @@ bool ReorganizarTablero(unsigned char*& tablero, int& filas, int& columnas, int&
     return true;
 }
 
-// Inserta una fila vacia en 'indice'. Si indice == filas, queda al final.
 bool InsertarFila(unsigned char*& tablero, int& filas, int columnas, int& bytesReservados, int indice)
 {
     if (indice < 0 || indice > filas)
@@ -165,7 +164,6 @@ bool InsertarFila(unsigned char*& tablero, int& filas, int columnas, int& bytesR
     return ReorganizarTablero(tablero, filas, columnas, bytesReservados, indice, 1, 0, 0);
 }
 
-// Elimina la fila 'indice'.
 bool EliminarFila(unsigned char*& tablero, int& filas, int columnas, int& bytesReservados, int indice)
 {
     if (indice < 0 || indice >= filas)
@@ -174,7 +172,6 @@ bool EliminarFila(unsigned char*& tablero, int& filas, int columnas, int& bytesR
     return ReorganizarTablero(tablero, filas, columnas, bytesReservados, indice, -1, 0, 0);
 }
 
-// Inserta una columna vacia en 'indice'. Si indice == columnas, queda al final.
 bool InsertarColumna(unsigned char*& tablero, int filas, int& columnas, int& bytesReservados, int indice)
 {
     if (indice < 0 || indice > columnas)
@@ -183,7 +180,6 @@ bool InsertarColumna(unsigned char*& tablero, int filas, int& columnas, int& byt
     return ReorganizarTablero(tablero, filas, columnas, bytesReservados, 0, 0, indice, 1);
 }
 
-// Elimina la columna 'indice'.
 bool EliminarColumna(unsigned char*& tablero, int filas, int& columnas, int& bytesReservados, int indice)
 {
     if (indice < 0 || indice >= columnas)
@@ -191,3 +187,51 @@ bool EliminarColumna(unsigned char*& tablero, int filas, int& columnas, int& byt
 
     return ReorganizarTablero(tablero, filas, columnas, bytesReservados, 0, 0, indice, -1);
 }
+
+void mostrarTableroFichas(const unsigned char* tablero, int filas, int columnas, int bytesReservados)
+{
+    int totalPosiciones = filas * columnas;
+
+    std::cout << "\nTablero (fichas):\n";
+
+    for (int fila = 0; fila < filas; fila++)
+    {
+        for (int columna = 0; columna < columnas; columna++)
+        {
+            int posicion = filaColumnaPosicion(fila, columna, columnas);
+            unsigned char ficha = obtenerFicha(tablero, posicion, totalPosiciones, bytesReservados);
+
+            std::cout << simboloFicha(ficha) << ' ';
+        }
+
+        std::cout << '\n';
+    }
+}
+
+void mostrarTableroBinario(const unsigned char* tablero, int filas, int columnas, int bytesReservados)
+{
+    int totalPosiciones = filas * columnas;
+
+    std::cout << "\nTablero (binario):\n";
+
+    for (int fila = 0; fila < filas; fila++)
+    {
+        for (int columna = 0; columna < columnas; columna++)
+        {
+            int posicion = filaColumnaPosicion(fila, columna, columnas);
+            unsigned char ficha = obtenerFicha(tablero, posicion, totalPosiciones, bytesReservados);
+
+            for (int bit = 2; bit >= 0; bit--)
+            {
+                if ((ficha >> bit) & 1)
+                    std::cout << '1';
+                else
+                    std::cout << '0';
+            }
+
+            std::cout << ' ';
+        }
+
+        std::cout << '\n';
+        }
+    }
