@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "tablero.h"
 #include "marcador.h"
 #include "combinaciones.h"
@@ -53,7 +56,6 @@ void iniciarJuego(unsigned char*& tablero, int& filas, int& columnas, int& bytes
     inicializarEstadisticas(estadisticas);
 
     RellenarEspaciosVacios(tablero, filas, columnas, bytesReservados);
-    std::cout << "\nFichas: C=Cuadrado H=Hexagono R=Rectangulo T=Triangulo O=Rombo P=Pentagono .=Vacio\n";
 
 }
 
@@ -161,6 +163,10 @@ void jugadaCambiarEstructura(unsigned char*& tablero, int& filas, int& columnas,
 
 int main()
 {
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
     unsigned char* tablero = nullptr;
     unsigned char* marcador = nullptr;
     int filas = 0;
@@ -174,8 +180,7 @@ int main()
 
     while (opcion != 0)
     {
-        mostrarTableroFichas(tablero, filas, columnas, bytesReservados);
-        mostrarTableroBinario(tablero, filas, columnas, bytesReservados);
+        mostrarTablero(tablero, filas, columnas, bytesReservados);
         mostrarEstadisticas(estadisticas, filas, columnas);
         mostrarMenu();
         opcion = leerEntero("Opcion: ", 0, 5);

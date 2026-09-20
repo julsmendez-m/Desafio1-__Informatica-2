@@ -5,18 +5,29 @@
 
 const int PORCENTAJE_MINIMO = 65;
 
-char simboloFicha(unsigned char ficha)
+const char* simboloFicha(unsigned char ficha)
 {
     switch (ficha)
     {
-    case F_CUADRADO:   return 'C';
-    case F_HEXAGONO:   return 'H';
-    case F_RECTANGULO: return 'R';
-    case F_TRIANGULO:  return 'T';
-    case F_ROMBO:      return 'O';
-    case F_PENTAGONO:  return 'P';
-    case F_VACIO:      return '.';
-    default:           return '*';   // F_ESPECIAL
+    case F_CUADRADO:   return "■";
+    case F_HEXAGONO:   return "⬢";
+    case F_RECTANGULO: return "▬";
+    case F_TRIANGULO:  return "▲";
+    case F_ROMBO:      return "◆";
+    case F_PENTAGONO:  return "⬟";
+    case F_VACIO:      return "○";
+    default:           return "★";   // F_ESPECIAL
+    }
+}
+
+void mostrarBitsFicha(unsigned char ficha)
+{
+    for (int bit = 2; bit >= 0; bit--)
+    {
+        if ((ficha >> bit) & 1)
+            std::cout << '1';
+        else
+            std::cout << '0';
     }
 }
 
@@ -188,11 +199,11 @@ bool EliminarColumna(unsigned char*& tablero, int filas, int& columnas, int& byt
     return ReorganizarTablero(tablero, filas, columnas, bytesReservados, 0, 0, indice, -1);
 }
 
-void mostrarTableroFichas(const unsigned char* tablero, int filas, int columnas, int bytesReservados)
+void mostrarTablero(const unsigned char* tablero, int filas, int columnas, int bytesReservados)
 {
     int totalPosiciones = filas * columnas;
 
-    std::cout << "\nTablero (fichas):\n";
+    std::cout << "\nTablero:\n";
 
     for (int fila = 0; fila < filas; fila++)
     {
@@ -201,37 +212,20 @@ void mostrarTableroFichas(const unsigned char* tablero, int filas, int columnas,
             int posicion = filaColumnaPosicion(fila, columna, columnas);
             unsigned char ficha = obtenerFicha(tablero, posicion, totalPosiciones, bytesReservados);
 
-            std::cout << simboloFicha(ficha) << ' ';
-        }
-
-        std::cout << '\n';
-    }
-}
-
-void mostrarTableroBinario(const unsigned char* tablero, int filas, int columnas, int bytesReservados)
-{
-    int totalPosiciones = filas * columnas;
-
-    std::cout << "\nTablero (binario):\n";
-
-    for (int fila = 0; fila < filas; fila++)
-    {
-        for (int columna = 0; columna < columnas; columna++)
-        {
-            int posicion = filaColumnaPosicion(fila, columna, columnas);
-            unsigned char ficha = obtenerFicha(tablero, posicion, totalPosiciones, bytesReservados);
-
-            for (int bit = 2; bit >= 0; bit--)
-            {
-                if ((ficha >> bit) & 1)
-                    std::cout << '1';
-                else
-                    std::cout << '0';
-            }
-
+            mostrarBitsFicha(ficha);
             std::cout << ' ';
         }
 
         std::cout << '\n';
+
+        for (int columna = 0; columna < columnas; columna++)
+        {
+            int posicion = filaColumnaPosicion(fila, columna, columnas);
+            unsigned char ficha = obtenerFicha(tablero, posicion, totalPosiciones, bytesReservados);
+
+            std::cout << "  " << simboloFicha(ficha) << ' ';
         }
+
+        std::cout << "\n\n";
     }
+}

@@ -19,8 +19,6 @@ bool InsertarColumna(unsigned char*& tablero, int filas, int& columnas, int& byt
 
 bool EliminarColumna(unsigned char*& tablero, int filas, int& columnas, int& bytesReservados, int indice);
 
-void mostrarTableroFichas(const unsigned char* tablero, int filas, int columnas, int bytesReservados);
-
-void mostrarTableroBinario(const unsigned char* tablero, int filas, int columnas, int bytesReservados);
+void mostrarTablero(const unsigned char* tablero, int filas, int columnas, int bytesReservados);
 
 #endif
